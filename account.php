@@ -115,7 +115,31 @@ $c=0;
 echo '</table></div>';
 
 }?>
-
+<script>
+    function startCountdown(timeInMinutes) {
+        var seconds = timeInMinutes * 60;
+    function secondPassed() {
+        var minutes = Math.round((seconds - 30) / 60);
+        var remainingSeconds = seconds % 60;
+        if (remainingSeconds < 10) {
+            remainingSeconds = "0" + remainingSeconds;
+        }
+        document.getElementById('countdown').innerHTML = minutes + ":" + remainingSeconds;
+        if (seconds == 0) {
+           timeLimitInSecond=100;
+            // clearInterval(countdownTimer);
+            // document.getElementById('countdown').
+            function submitForm() {
+        document.getElementById("subform").submit();
+        setTimeout(submitForm, timeLimitInSeconds * 1000);
+    }
+        } else {
+            seconds--;
+        }
+    }
+    var countdownTimer = setInterval(secondPassed, 1000);
+  }
+    </script>
 
 <!--quiz start-->
 <?php
@@ -123,6 +147,32 @@ if(@$_GET['q']== 'quiz' && @$_GET['step']== 2) {
 $eid=@$_GET['eid'];
 $sn=@$_GET['n'];
 $total=@$_GET['t'];
+$displayCountdown = true; $query = "SELECT * FROM quiz WHERE eid='$eid'";
+$result = mysqli_query($con, $query);
+
+if ($result) {
+    if (mysqli_num_rows($result) > 0) {
+        // Fetch the first row as an associative array
+        $row = mysqli_fetch_assoc($result);
+
+        // Store the value in a PHP variable
+        $timeFromDatabase = $row['time']; // Replace 'your_column' with the actual column name
+
+        // Output the JavaScript with the value
+        echo "<script>startCountdown($timeFromDatabase)</script>";
+    } else {
+        echo "No results found in the database";
+    }
+} else {
+    // Handle query error
+    echo "Query failed: " . mysqli_error($con);
+}
+
+if ($displayCountdown) {
+
+    echo "<span id='countdown' class='timer'></span>";
+}
+
 $q=mysqli_query($con,"SELECT * FROM questions WHERE eid='$eid' AND sn='$sn' " );
 echo '<div class="panel" style="margin:5%">';
 while($row=mysqli_fetch_array($q) )
@@ -134,15 +184,22 @@ echo '<b>Question &nbsp;'.$sn.'&nbsp;:<br><br>'.$qns.' <br>';
 $q=mysqli_query($con,"SELECT * FROM options WHERE qid='$qid' " );
 echo '<form action="update.php?q=quiz&step=2&eid='.$eid.'&n='.$sn.'&t='.$total.'&qid='.$qid.'" method="POST"  class="form-horizontal">
 <br />';
-
+$i=1;
 while($row=mysqli_fetch_array($q) )
 {
 $option=$row['option'];
 $optionid=$row['optionid'];
 echo'<input type="radio" name="ans" value="'.$optionid.'"><b> '.$option.' </b><br><br>';
 }
+$i=$i+1;
+if ($i!=$sn) {
+echo'<br /><button type="submit" class="btn btn-primary" style="border-radius:0%"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span>&nbsp;NEXT</button></form></div>';
+//header("location:dash.php?q=4&step=2&eid=$id&n=$total");
+}
+else{
 echo'<br /><button type="submit" class="btn btn-primary" style="border-radius:0%"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span>&nbsp;Submit</button></form></div>';
 //header("location:dash.php?q=4&step=2&eid=$id&n=$total");
+}
 }
 //result display
 if(@$_GET['q']== 'result' && @$_GET['eid']) 
@@ -237,7 +294,7 @@ echo '</table></div>';}
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" style="font-family:'typo' "><span style="color:orange">Developers</span></h4>
+        <h4 class="modal-title" style="font-family:'typo' "><span style="color:orange">about us</span></h4>
       </div>
 	  
       <div class="modal-body">
@@ -247,10 +304,10 @@ echo '</table></div>';}
 		 <img src="image/CAM00121.jpg" width=100 height=100 alt="Sunny Prakash Tiwari" class="img-rounded">
 		 </div>
 		 <div class="col-md-5">
-     <a style="color:#202020; font-family:'typo' ; font-size:18px; text-decoration:none" title="Find on Facebook">Sunny Prakash Tiwari</a>
-		<h4 style="color:#202020; font-family:'typo' ;font-size:16px" class="title1">+917785068889</h4>
-		<h4 style="font-family:'typo' ">sunnygkp10@gmail.com</h4>
-		<h4 style="font-family:'typo' ">Kamla Nehru Institute Of Technology ,Sultanpur</h4></div></div>
+     <a style="color:#202020; font-family:'typo' ; font-size:18px; text-decoration:none" title="Find on Facebook"></a>
+		<h4 style="color:#202020; font-family:'typo' ;font-size:16px" class="title1"></h4>
+		<h4 style="font-family:'typo' "></h4>
+		<h4 style="font-family:'typo' "></h4></div></div>
 		</p>
       </div>
     
